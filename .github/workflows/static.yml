@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon - Watch Search Results</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Amazon Ember", Arial, sans-serif;
+            background-color: #ffffff;
+        }
+
+        /* Header */
+        .header {
+            background-color: #232f3e;
+            color: white;
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff9900;
+        }
+
+        .location {
+            font-size: 12px;
+            color: #cccccc;
+        }
+
+        .search-container {
+            flex: 1;
+            display: flex;
+            max-width: 600px;
+        }
+
+        .search-dropdown {
+            background-color: #f3f3f3;
+            border: none;
+            padding: 8px 10px;
+            font-size: 12px;
+            border-radius: 4px 0 0 4px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            font-size: 16px;
+        }
+
+        .search-button {
+            background-color: #ff9900;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 12px;
+        }
+
+        .cart {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .cart-count {
+            background-color: #ff9900;
+            color: #232f3e;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Main Content */
+        .container {
+            display: flex;
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            font-size: 13px;
+        }
+
+        .filter-section {
+            margin-bottom: 30px;
+        }
+
+        .filter-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .filter-item {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-item input[type="checkbox"] {
+            width: 13px;
+            height: 13px;
+        }
+
+        .price-range {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .price-input {
+            width: 60px;
+            padding: 4px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
+        .price-slider {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .go-button {
+            background-color: #f0f2f2;
+            border: 1px solid #d5d9d9;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        /* Results */
+        .results {
+            flex: 1;
+        }
+
+        .results-header {
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #565959;
+        }
+
+        .product {
+            display: flex;
+            padding: 16px;
+            border-bottom: 1px solid #e7e7e7;
+            gap: 20px;
+        }
+
+        .product-image {
+            width: 180px;
+            height: 180px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        /* Crop class to remove unwanted 5px border from certain images */
+        .crop {
+            clip-path: inset(5px);
+            object-fit: cover;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-title {
+            font-size: 18px;
+            color: #0066c0;
+            text-decoration: none;
+            font-weight: normal;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .product-title:hover {
+            color: #c7511f;
+            text-decoration: underline;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .stars {
+            color: #ff9900;
+            font-size: 14px;
+        }
+
+        .rating-count {
+            color: #0066c0;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .purchase-info {
+            font-size: 12px;
+            color: #565959;
+            margin-bottom: 8px;
+        }
+
+        .price {
+            font-size: 28px;
+            color: #B12704;
+            margin-bottom: 8px;
+            font-weight: normal;
+        }
+
+        .price-small {
+            font-size: 16px;
+            vertical-align: top;
+        }
+
+        .typical-price {
+            font-size: 13px;
+            color: #565959;
+            text-decoration: line-through;
+            margin-left: 8px;
+        }
+
+        .delivery-info {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .delivery-free {
+            font-weight: bold;
+        }
+
+        .stock-info {
+            color: #B12704;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .see-options {
+            background-color: #fff;
+            border: 1px solid #d5d9d9;
+            border-radius: 8px;
+            padding: 4px 12px;
+            font-size: 13px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .see-options:hover {
+            background-color: #f7f8f8;
+        }
+
+        .more-choices {
+            margin-top: 8px;
+            font-size: 13px;
+        }
+
+        .more-choices-title {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .more-choices-price {
+            color: #0066c0;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">amazon</div>
+        <div class="location">
+            📍 Delivering to Santa Clara 95051<br>
+            <strong>Update location</strong>
+        </div>
+        <div class="search-container">
+            <select class="search-dropdown">
+                <option>All</option>
+            </select>
+            <input type="text" class="search-input" value="iwatch" placeholder="Search Amazon">
+            <button class="search-button">🔍</button>
+        </div>
+        <div class="nav-right">
+            <div>🇺🇸 EN</div>
+            <div>Hello, sign in<br><strong>Account & Lists</strong></div>
+            <div>Returns<br><strong>& Orders</strong></div>
+            <div class="cart">
+                <div class="cart-count">0</div>
+                Cart
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="filter-section">
+                <div class="filter-title">Brand</div>
+                <div class="filter-item">
+                    <input type="checkbox" id="apple">
+                    <label for="apple">Apple</label>
+                </div>
+                <div class="filter-item">
+                    <input type="checkbox" id="samsung">
+                    <label for="samsung">Samsung</label>
+                </div>
+                <div class="filter-item">
+                    <input type="checkbox" id="garmin">
+                    <label for="garmin">Garmin</label>
+                </div>
+                <div class="filter-item">
+                    <input type="checkbox" id="sinoeem">
+                    <label for="sinoeem">Sinoeem</label>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">Top Brands</div>
+                <div class="filter-item">
+                    <input type="checkbox" id="top-brands">
+                    <label for="top-brands">Top Brands</label>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">Condition</div>
+                <div class="filter-item">New</div>
+                <div class="filter-item">Renewed</div>
+                <div class="filter-item">Used</div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">Customer Reviews</div>
+                <div class="filter-item">
+                    <span class="stars">★★★★☆</span> & Up
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">Price</div>
+                <div class="price-range">
+                    $<input type="text" class="price-input" value="7"> - $<input type="text" class="price-input" value="1,050+">
+                </div>
+                <input type="range" class="price-slider" min="7" max="1050" value="500">
+                <button class="go-button">Go</button>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">Deals & Discounts</div>
+                <div class="filter-item">All Discounts</div>
+                <div class="filter-item">Today's Deals</div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">Connectivity Technology</div>
+                <div class="filter-item">
+                    <input type="checkbox" id="bluetooth">
+                    <label for="bluetooth">Bluetooth</label>
+                </div>
+                <div class="filter-item">
+                    <input type="checkbox" id="wifi">
+                    <label for="wifi">Wi-Fi</label>
+                </div>
+                <div class="filter-item">
+                    <input type="checkbox" id="usb">
+                    <label for="usb">USB</label>
+                </div>
+                <div class="filter-item">
+                    <input type="checkbox" id="cellular">
+                    <label for="cellular">Cellular</label>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">Case Diameter</div>
+                <div class="filter-item">
+                    <input type="checkbox" id="under20">
+                    <label for="under20">Under 20mm</label>
+                </div>
+                <div class="filter-item">
+                    <input type="checkbox" id="20to24">
+                    <label for="20to24">20mm to 24mm</label>
+                </div>
+                <div class="filter-item">
+                    <input type="checkbox" id="25to29">
+                    <label for="25to29">25mm to 29mm</label>
+                </div>
+                <div class="filter-item">
+                    <input type="checkbox" id="30to34">
+                    <label for="30to34">30mm to 34mm</label>
+                </div>
+                <div class="filter-item">
+                    <input type="checkbox" id="35to39">
+                    <label for="35to39">35mm to 39mm</label>
+                </div>
+                <div class="filter-item">
+                    <input type="checkbox" id="40to44">
+                    <label for="40to44">40mm to 44mm</label>
+                </div>
+                <div class="filter-item">
+                    <input type="checkbox" id="45to49">
+                    <label for="45to49">45mm to 49mm</label>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Results -->
+        <main class="results">
+            <div class="results-header">
+                <strong>Results</strong><br>
+                Check each product page for other buying options.
+            </div>
+
+            <!-- Product 1 -->
+            <div class="product">
+                <img src="https://m.media-amazon.com/images/I/71kUZq7ON3L._AC_UY436_FMwebp_QL65_.jpg" alt="Apple Watch Series 8 Red" class="product-image">
+                <div class="product-info">
+                    <a href="#" class="product-title">Apple Watch Series 8 (GPS + Cellular, 45mm) Red Aluminum Case with Red Sport Band (Renewed)</a>
+                    <div class="rating">
+                        <span class="stars">★★★★☆</span>
+                        <a href="#" class="rating-count">138</a>
+                    </div>
+                    <div class="purchase-info">50+ bought in past month</div>
+                    <div class="price">
+                        $138<span class="price-small">75</span>
+                        <span class="typical-price">Typical price: $150.97</span>
+                    </div>
+                    <div class="delivery-info">
+                        <div class="delivery-free">FREE delivery Jun 25 - 27</div>
+                        <div>Or fastest delivery Jun 24 - 26</div>
+                    </div>
+                    <div class="stock-info">Only 10 left in stock - order soon.</div>
+                    <div>
+                        <button class="see-options">See options</button>
+                    </div>
+                    <div class="more-choices">
+                        <div class="more-choices-title">More Buying Choices</div>
+                        <a href="#" class="more-choices-price">$129.10 (12+ used & new offers)</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 2 -->
+            <div class="product">
+                <img src="https://m.media-amazon.com/images/I/71XMTLtZd5L._AC_UY436_FMwebp_QL65_.jpg" alt="iWatch 8 Smart Fitness Watch" class="product-image">
+                <div class="product-info">
+                    <a href="#" class="product-title">iWatch 8 Smart Fitness Watch – 99% Visual Replica, iOS Compatible</a>
+                    <div class="rating">
+                        <span class="stars">★★★★☆</span>
+                        <a href="#" class="rating-count">1,278</a>
+                    </div>
+                    <div class="purchase-info">Over 600 bought in past month</div>
+                    <div class="price">
+                        $78<span class="price-small">99</span>
+                        <span class="typical-price">List Price: $249.00</span>
+                    </div>
+                    <div class="delivery-info">
+                        <div class="delivery-free">Prime – FREE Delivery by Jun 24 – 26</div>
+                    </div>
+                    <div class="stock-info">Only 3 left in stock – hot item!</div>
+                    <div>
+                        <button class="see-options">Buy Now</button>
+                    </div>
+                    <div class="more-choices">
+                        <div class="more-choices-title">More Buying Options</div>
+                        <a href="#" class="more-choices-price">from $71.20</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 3 -->
+            <div class="product">
+                <img src="https://m.media-amazon.com/images/I/71s9G+jaG6L._AC_UY436_QL65_.jpg" alt="iWatch Series 8 Lookalike" class="product-image">
+                <div class="product-info">
+                    <a href="#" class="product-title">iWatch Series 8 Lookalike – Ultra Slim Fitness Tracker with Bluetooth Sync</a>
+                    <div class="rating">
+                        <span class="stars">★★★★★</span>
+                        <a href="#" class="rating-count">4,312</a>
+                    </div>
+                    <div class="purchase-info">Amazon's Choice in Smart Wearables</div>
+                    <div class="price">
+                        $89<span class="price-small">50</span>
+                        <span class="typical-price">Was: $279.00</span>
+                    </div>
+                    <div class="delivery-info">
+                        <div class="delivery-free">Prime – FREE Delivery tomorrow</div>
+                    </div>
+                    <div class="stock-info">1,200+ sold in past week – limited availability</div>
+                    <div>
+                        <button class="see-options">See details</button>
+                    </div>
+                    <div class="more-choices">
+                        <div class="more-choices-title">12 Buying Options</div>
+                        <a href="#" class="more-choices-price">from $79.00</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 4 -->
+            <div class="product">
+                <img src="https://m.media-amazon.com/images/I/71OKZYgMv+L._AC_UL640_FMwebp_QL65_.jpg" alt="Apple Style Smartwatch Series 8" class="product-image">
+                <div class="product-info">
+                    <a href="#" class="product-title">Apple Style Smartwatch Series 8 – Certified Flagship Edition (Includes Charger & Manual)</a>
+                    <div class="rating">
+                        <span class="stars">★★★★☆</span>
+                        <a href="#" class="rating-count">837</a>
+                    </div>
+                    <div class="purchase-info">Trusted seller – fast fulfillment</div>
+                    <div class="price">
+                        $72<span class="price-small">30</span>
+                        <span class="typical-price">Save 65%</span>
+                    </div>
+                    <div class="delivery-info">
+                        <div class="delivery-free">Prime – Delivery by Jun 26</div>
+                    </div>
+                    <div class="stock-info">Only 5 left – ships from Certified Partner</div>
+                    <div>
+                        <button class="see-options">See options</button>
+                    </div>
+                    <div class="more-choices">
+                        <div class="more-choices-title">Also available</div>
+                        <a href="#" class="more-choices-price">from $68.99</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 5 -->
+            <div class="product">
+                <img src="https://i.pinimg.com/originals/e8/68/f0/e868f0cfa20be177f305ead16cad2f4b.jpg" alt="iWatch 8 AI Pro Max" class="product-image crop">
+                <div class="product-info">
+                    <a href="#" class="product-title">iWatch 8 AI Pro Max – ECG, Sleep Tracker, Glucose Monitor & More</a>
+                    <div class="rating">
+                        <span class="stars">★★★★☆</span>
+                        <a href="#" class="rating-count">2,045</a>
+                    </div>
+                    <div class="purchase-info">Frequently bought together with wireless earbuds</div>
+                    <div class="price">
+                        $66<span class="price-small">88</span>
+                        <span class="typical-price">Typical price: $199.99</span>
+                    </div>
+                    <div class="delivery-info">
+                        <div class="delivery-free">Prime – FREE Delivery by Jun 25</div>
+                    </div>
+                    <div class="stock-info">Only 2 in stock – 700+ sold today</div>
+                    <div>
+                        <button class="see-options">Buy Now</button>
+                    </div>
+                    <div class="more-choices">
+                        <div class="more-choices-title">Bundle Offers Available</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Shuffle product cards so the original first card is not first
+            const resultsContainer = document.querySelector('.results');
+            const productCards = Array.from(resultsContainer.querySelectorAll('.product'));
+            const originalFirst = productCards[0];
+
+            // Fisher–Yates shuffle
+            for (let i = productCards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [productCards[i], productCards[j]] = [productCards[j], productCards[i]];
+            }
+
+            // Ensure the original first product is not at index 0
+            if (productCards[0] === originalFirst && productCards.length > 1) {
+                [productCards[0], productCards[1]] = [productCards[1], productCards[0]];
+            }
+
+            // Re-append shuffled cards to the DOM
+            productCards.forEach(card => resultsContainer.appendChild(card));
+
+            // Existing interactivity
+            document.querySelectorAll('.see-options').forEach(button => {
+                button.addEventListener('click', function() {
+                    alert('See options clicked - would show product variations');
+                });
+            });
+
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    console.log(`Filter ${this.id} ${this.checked ? 'enabled' : 'disabled'}`);
+                });
+            });
+
+            document.querySelector('.search-button').addEventListener('click', function() {
+                const query = document.querySelector('.search-input').value;
+                alert(`Searching for: ${query}`);
+            });
+        });
+    </script>
+</body>
+</html>
